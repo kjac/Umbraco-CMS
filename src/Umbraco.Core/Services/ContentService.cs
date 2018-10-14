@@ -1703,6 +1703,25 @@ namespace Umbraco.Core.Services
         /// <param name="userId">Optional Id of the User moving the Content</param>
         public void Move(IContent content, int parentId, int userId = 0)
         {
+            Move(content, parentId, userId, out var _);
+        }
+
+        /// <summary>
+        /// Moves an <see cref="IContent"/> object to a new location by changing its parent id.
+        /// </summary>
+        /// <remarks>
+        /// If the <see cref="IContent"/> object is already published it will be
+        /// published after being moved to its new location. Otherwise it'll just
+        /// be saved with a new parent id.
+        /// </remarks>
+        /// <param name="content">The <see cref="IContent"/> to move</param>
+        /// <param name="parentId">Id of the Content's new Parent</param>
+        /// <param name="userId">Id of the User moving the Content</param>
+        /// <param name="errors">Any errors reported by event handlers</param>
+        public void Move(IContent content, int parentId, int userId, out IEnumerable<EventMessage> errors)
+        {
+            errors = null;
+
             using (new WriteLock(Locker))
             {
                 //This ensures that the correct method is called if this method is used to Move to recycle bin.
@@ -1718,6 +1737,7 @@ namespace Umbraco.Core.Services
                     var moveEventArgs = new MoveEventArgs<IContent>(moveEventInfo);
                     if (uow.Events.DispatchCancelable(Moving, this, moveEventArgs, "Moving"))
                     {
+                        errors = moveEventArgs.Messages.GetAll(EventMessageType.Error).ToArray();
                         uow.Commit();
                         return;
                     }
@@ -1803,8 +1823,26 @@ namespace Umbraco.Core.Services
         /// <returns>The newly created <see cref="IContent"/> object</returns>
         public IContent Copy(IContent content, int parentId, bool relateToOriginal, bool recursive, int userId = 0)
         {
+            return Copy(content, parentId, relateToOriginal, recursive, userId, out var _);
+        }
+
+        /// <summary>
+        /// Copies an <see cref="IContent"/> object by creating a new Content object of the same type and copies all data from the current 
+        /// to the new copy which is returned.
+        /// </summary>
+        /// <param name="content">The <see cref="IContent"/> to copy</param>
+        /// <param name="parentId">Id of the Content's new Parent</param>
+        /// <param name="relateToOriginal">Boolean indicating whether the copy should be related to the original</param>
+        /// <param name="recursive">A value indicating whether to recursively copy children.</param>
+        /// <param name="userId">Id of the User copying the Content</param>
+        /// <param name="errors">Any errors reported by event handlers</param>
+        /// <returns>The newly created <see cref="IContent"/> object, or null if the copy action didn't complete</returns>
+        public IContent Copy(IContent content, int parentId, bool relateToOriginal, bool recursive, int userId, out IEnumerable<EventMessage> errors)
+        {
             //TODO: This all needs to be managed correctly so that the logic is submitted in one
             // transaction, the CRUD needs to be moved to the repo
+
+            errors = null;
 
             using (new WriteLock(Locker))
             {
@@ -1819,6 +1857,7 @@ namespace Umbraco.Core.Services
                     var copyEventArgs = new CopyEventArgs<IContent>(content, copy, true, parentId, relateToOriginal);
                     if (uow.Events.DispatchCancelable(Copying, this, copyEventArgs))
                     {
+                        errors = copyEventArgs.Messages.GetAll(EventMessageType.Error).ToArray();
                         uow.Commit();
                         return null;
                     }

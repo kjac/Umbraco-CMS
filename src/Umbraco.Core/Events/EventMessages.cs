@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Umbraco.Core.Events
 {
@@ -22,6 +23,11 @@ namespace Umbraco.Core.Events
         public IEnumerable<EventMessage> GetAll()
         {
             return _msgs;
+        }
+
+        public IEnumerable<EventMessage> GetAll(EventMessageType messageType)
+        {
+            return _msgs.Where(m => m.MessageType == messageType);
         }
 
         protected override void DisposeResources()

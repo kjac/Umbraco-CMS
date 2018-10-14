@@ -895,7 +895,14 @@ namespace Umbraco.Web.Editors
         {
             var toMove = ValidateMoveOrCopy(move);
 
-            Services.ContentService.Move(toMove, move.ParentId, Security.CurrentUser.Id);
+            Services.ContentService.Move(toMove, move.ParentId, Security.CurrentUser.Id, out var errors);
+
+            // grab the first error message (if any) and show it (the UI doesn't support multiple error messages as is)
+            var errorMessage = errors?.FirstOrDefault()?.Message;
+            if (errorMessage.IsNullOrWhiteSpace() == false)
+            {
+                throw new HttpResponseException(Request.CreateNotificationValidationErrorResponse(errorMessage));
+            }
 
             var response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(toMove.Path, Encoding.UTF8, "application/json");
@@ -912,7 +919,14 @@ namespace Umbraco.Web.Editors
         {
             var toCopy = ValidateMoveOrCopy(copy);
 
-            var c = Services.ContentService.Copy(toCopy, copy.ParentId, copy.RelateToOriginal, copy.Recursive, Security.CurrentUser.Id);
+            var c = Services.ContentService.Copy(toCopy, copy.ParentId, copy.RelateToOriginal, copy.Recursive, Security.CurrentUser.Id, out var errors);
+
+            if (c == null)
+            {
+                // grab the first error message (if any) and show it (the UI doesn't support multiple error messages as is)
+                var errorMessage = errors?.FirstOrDefault()?.Message ?? string.Empty;
+                throw new HttpResponseException(Request.CreateNotificationValidationErrorResponse(errorMessage));
+            }
 
             var response = Request.CreateResponse(HttpStatusCode.OK);
             response.Content = new StringContent(c.Path, Encoding.UTF8, "application/json");
