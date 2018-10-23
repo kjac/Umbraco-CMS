@@ -26,6 +26,14 @@
         $scope.allowOpen = true;
 
         function init(content) {
+            // assign unique input IDs to all properties
+            _.each(content.variants, function(variant) {
+                _.each(variant.tabs, function(tab) {
+                    _.each(tab.properties, function(property) {
+                        property.inputId = property.alias + "_" + _.uniqueId();
+                    });
+                });
+            });
 
             // set first app to active
             content.apps[0].active = true;
