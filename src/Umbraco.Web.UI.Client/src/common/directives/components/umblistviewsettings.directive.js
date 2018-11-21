@@ -135,7 +135,7 @@
       /* ----------- METHODS ---------- */
 
       function checkForCustomListView() {
-          return scope.dataType.name === "List View - " + scope.modelAlias;
+        return scope.listViewName === "List View - " + scope.modelAlias;
       }
 
     }
