@@ -4,14 +4,17 @@ angular.module("umbraco").controller("Umbraco.Editors.Content.RestoreController"
 
 		var node = dialogOptions.currentNode;
 
-		$scope.error = null;
-	    $scope.success = false;
+        $scope.loading = true;
+        $scope.error = null;
+		$scope.info = null;
+        $scope.success = false;
+        $scope.moveAction = null;
 
 		relationResource.getByChildId(node.id, "relateParentDocumentOnDelete").then(function (data) {
+		    $scope.loading = false;
 
             if (data.length == 0) {
-                $scope.success = false;
-                $scope.error = {
+                $scope.info = {
                     errorMsg: localizationService.localize('recycleBin_itemCannotBeRestored'),
                     data: {
                         Message: localizationService.localize('recycleBin_noRestoreRelation')
@@ -26,12 +29,14 @@ angular.module("umbraco").controller("Umbraco.Editors.Content.RestoreController"
 				$scope.target = { id: -1, name: "Root" };
 
 			} else {
+			    $scope.loading = true;
 			    contentResource.getById($scope.relation.parentId).then(function (data) {
+			        $scope.loading = false;
 					$scope.target = data;
 
 					// make sure the target item isn't in the recycle bin
 					if($scope.target.path.indexOf("-20") !== -1) {
-						$scope.error = {
+						$scope.info = {
                             errorMsg: localizationService.localize('recycleBin_itemCannotBeRestored'),
 							data: {
                                 Message: localizationService.localize('recycleBin_restoreUnderRecycled').then(function (value) {
@@ -43,20 +48,27 @@ angular.module("umbraco").controller("Umbraco.Editors.Content.RestoreController"
 					}
 
 				}, function (err) {
-					$scope.success = false;
+			        $scope.loading = false;
 					$scope.error = err;
 				});
 			}
 
 		}, function (err) {
-			$scope.success = false;
+		    $scope.loading = false;
 			$scope.error = err;
 		});
 
-		$scope.restore = function () {
+        treeService.getMenu({ treeNode: dialogOptions.currentNode })
+            .then(function (data) {
+                $scope.moveAction = _.find(data.menuItems, function (m) { return m.alias === "move"; });
+            });
+
+        $scope.restore = function () {
+            $scope.loading = true;
 			// this code was copied from `content.move.controller.js`
 			contentResource.move({ parentId: $scope.target.id, id: node.id })
 				.then(function (path) {
+			        $scope.loading = false;
 
 					$scope.success = true;
 
@@ -78,8 +90,15 @@ angular.module("umbraco").controller("Umbraco.Editors.Content.RestoreController"
 					});
 
 				}, function (err) {
-					$scope.success = false;
+			        $scope.loading = false;
 					$scope.error = err;
 				});
-		};
+        };
+
+        $scope.move = function() {
+            if (!$scope.moveAction) {
+                return;
+            }
+            navigationService.executeMenuAction($scope.moveAction, dialogOptions.currentNode, "content");
+        }
 	});
