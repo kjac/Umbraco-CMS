@@ -189,10 +189,14 @@
             value: sliderVal
         });
 
-        slider.on('slideStop', function (e) {
-            var value = e.value;
+        slider.on('change', function (e) {
+            if (e.value.newValue === e.value.oldValue) {
+                return;
+            }
+
             angularHelper.safeApply($scope, function () {
-                $scope.model.value = getModelValueFromSlider(value);
+                $scope.model.value = getModelValueFromSlider(e.value.newValue);
+                angularHelper.getCurrentForm($scope).$setDirty();
             });
         }).data('slider');
 
