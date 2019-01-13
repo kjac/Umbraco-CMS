@@ -12,6 +12,7 @@ using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Core.Services;
+using Umbraco.Web.Templates;
 using UmbracoExamine;
 
 namespace Umbraco.Web.PropertyEditors
@@ -125,6 +126,29 @@ namespace Umbraco.Web.PropertyEditors
             public GridPropertyValueEditor(PropertyValueEditor wrapped)
                 : base(wrapped)
             {
+            }
+
+            public override object ConvertDbToEditor(Property property, PropertyType propertyType, IDataTypeService dataTypeService)
+            {
+                var value = base.ConvertDbToEditor(property, propertyType, dataTypeService);
+                if (value is JObject jObject)
+                {
+                    // locate the RTEs and make sure any embedded images are up to date (see also #3869)
+                    foreach (var rte in jObject["sections"]?.SelectMany(section =>
+                        section["rows"]?.SelectMany(row =>
+                            row["areas"]?.SelectMany(area =>
+                                area["controls"]?.Where(control =>
+                                    control["editor"]["alias"].Value<string>() == "rte")
+                                )
+                            )
+                        )
+                    )
+                    {
+                        var rteValue = rte["value"].Value<JValue>();
+                        rteValue.Value = TemplateUtilities.ResolveMediaFromTextString(rteValue.Value.ToString());
+                    }
+                }
+                return value;
             }
 
         }

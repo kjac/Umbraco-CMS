@@ -1,4 +1,8 @@
 ﻿@model dynamic
 @using Umbraco.Web.Templates
+@{
+    var value = TemplateUtilities.ParseInternalLinks(Model.value.ToString());
+    value = TemplateUtilities.ResolveMediaFromTextString(value);
+}
 
-@Html.Raw(TemplateUtilities.ParseInternalLinks(Model.value.ToString()))
+@Html.Raw(value)
