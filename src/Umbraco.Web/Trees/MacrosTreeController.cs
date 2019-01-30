@@ -53,7 +53,7 @@ namespace Umbraco.Web.Trees
             if (id == Constants.System.Root.ToInvariantString())
             {
                 //Create the normal create action
-                menu.Items.Add<ActionNew>(Services.TextService);
+                menu.Items.Add<ActionNew>(Services.TextService, opensDialog: true);
 
                 //refresh action
                 menu.Items.Add(new RefreshNode(Services.TextService, true));

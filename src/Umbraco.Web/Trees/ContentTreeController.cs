@@ -130,7 +130,7 @@ namespace Umbraco.Web.Trees
 
                 //these two are the standard items
                 menu.Items.Add<ActionNew>(Services.TextService, opensDialog: true);
-                menu.Items.Add<ActionSort>(Services.TextService, true);
+                menu.Items.Add<ActionSort>(Services.TextService, hasSeparator: true, opensDialog: true);
 
                 //filter the standard items
                 FilterUserAllowedMenuItems(menu, nodeActions);
@@ -234,7 +234,7 @@ namespace Umbraco.Web.Trees
             AddActionNode<ActionCreateBlueprintFromContent>(item, menu, opensDialog: true);
             AddActionNode<ActionMove>(item, menu, true, opensDialog: true);
             AddActionNode<ActionCopy>(item, menu, opensDialog: true);
-            AddActionNode<ActionSort>(item, menu, true);
+            AddActionNode<ActionSort>(item, menu, hasSeparator: true, opensDialog: true);
             AddActionNode<ActionAssignDomain>(item, menu, opensDialog: true);
             AddActionNode<ActionRights>(item, menu, opensDialog: true);
             AddActionNode<ActionProtect>(item, menu, true, opensDialog: true);

@@ -97,7 +97,7 @@ namespace Umbraco.Web.Trees
 
                 // root actions
                 menu.Items.Add<ActionNew>(Services.TextService, opensDialog: true);
-                menu.Items.Add<ActionSort>(Services.TextService, true);
+                menu.Items.Add<ActionSort>(Services.TextService, hasSeparator: true, opensDialog: true);
                 menu.Items.Add(new RefreshNode(Services.TextService, true));
                 return menu;
             }
@@ -137,7 +137,7 @@ namespace Umbraco.Web.Trees
                 menu.Items.Add<ActionNew>(Services.TextService, opensDialog: true);
                 menu.Items.Add<ActionMove>(Services.TextService, opensDialog: true);
                 menu.Items.Add<ActionDelete>(Services.TextService, opensDialog: true);
-                menu.Items.Add<ActionSort>(Services.TextService);
+                menu.Items.Add<ActionSort>(Services.TextService, hasSeparator: true, opensDialog: true);
                 menu.Items.Add(new RefreshNode(Services.TextService, true));
 
                 //set the default to create
