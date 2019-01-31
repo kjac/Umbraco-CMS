@@ -45,10 +45,11 @@ namespace Umbraco.Web.Editors
         private readonly ITreeService _treeService;
 
         public EntityController(IGlobalSettings globalSettings, UmbracoContext umbracoContext, ISqlContext sqlContext, ServiceContext services, AppCaches appCaches, IProfilingLogger logger, IRuntimeState runtimeState,
-            ITreeService treeService)
+            ITreeService treeService, UmbracoTreeSearcher treeSearcher)
             : base(globalSettings, umbracoContext, sqlContext, services, appCaches, logger, runtimeState)
         {
             _treeService = treeService;
+            _treeSearcher = treeSearcher;
         }
 
         /// <summary>
