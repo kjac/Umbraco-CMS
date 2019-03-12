@@ -19,13 +19,16 @@
             <div class="umb-list-item" ng-repeat="variant in vm.variants | filter:vm.dirtyVariantFilter track by variant.compositeId">
                 <ng-form name="saveVariantSelectorForm">
                     <div class="flex">
-
-                        <umb-checkbox
-                            input-id="{{variant.htmlId}}"
-                            name="saveVariantSelector"
-                            model="variant.save"
-                            on-change="vm.changeSelection(variant)"
-                            server-validation-field="{{variant.htmlId}}"/>
+                        <umb-toggle checked="variant.save"
+                                    on-click="vm.toggleSelection(variant)"
+                                    style="margin-right: 8px;">
+                        </umb-toggle>
+                        <!-- this input is necessary to wire up any server validation errors to the UI -->
+                        <input id="{{variant.htmlId}}"
+                               name="saveVariantSelector"
+                               type="hidden"
+                               ng-model="variant.save"
+                               val-server-field="{{variant.htmlId}}" />
 
                         <div>
                             <label for="{{variant.htmlId}}" style="margin-bottom: 2px;">

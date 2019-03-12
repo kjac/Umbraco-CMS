@@ -8,11 +8,12 @@
         vm.hasPristineVariants = false;
         vm.isNew = true;
 
-        vm.changeSelection = changeSelection;
+        vm.toggleSelection = toggleSelection;
         vm.dirtyVariantFilter = dirtyVariantFilter;
         vm.pristineVariantFilter = pristineVariantFilter;
 
-        function changeSelection(variant) {
+        function toggleSelection(variant) {            
+            variant.save = !variant.save;
             var firstSelected = _.find(vm.variants, function (v) {
                 return v.save;
             });
