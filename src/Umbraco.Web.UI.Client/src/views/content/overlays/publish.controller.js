@@ -8,7 +8,7 @@
         vm.hasPristineVariants = false;
         vm.isNew = true;
 
-        vm.changeSelection = changeSelection;
+        vm.toggleSelection = toggleSelection;
         vm.dirtyVariantFilter = dirtyVariantFilter;
         vm.pristineVariantFilter = pristineVariantFilter;
 
@@ -52,8 +52,9 @@
             return null;
         }
 
-        function changeSelection(variant) {
-            
+        function toggleSelection(variant) {            
+            variant.publish = !variant.publish;
+
             $scope.model.disableSubmitButton = !canPublish();
             //need to set the Save state to true if publish is true
             variant.save = variant.publish;
