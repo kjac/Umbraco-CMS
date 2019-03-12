@@ -5,7 +5,7 @@
 
         var vm = this;
 
-        vm.changeSelection = changeSelection;
+        vm.toggleSelection = toggleSelection;
 
         function onInit() {
 
@@ -80,7 +80,9 @@
             return selected.length > 0;
         }
 
-        function changeSelection(variant) {
+        function toggleSelection(variant) {
+            variant.publish = !variant.publish;
+
             $scope.model.disableSubmitButton = !canPublish();
             //need to set the Save state to true if publish is true
             variant.save = variant.publish;

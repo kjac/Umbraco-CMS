@@ -42,13 +42,17 @@
             <div class="umb-list-item umb-list--condensed" ng-repeat="variant in vm.variants">
                 <ng-form name="publishVariantSelectorForm">
                     <div class="flex">
-
-                        <umb-checkbox
-                            input-id="{{variant.htmlId}}"
-                            name="publishVariantSelector"
-                            model="variant.publish"
-                            on-change="vm.changeSelection(variant)"
-                            server-validation-field="{{variant.htmlId}}"/>
+                        <umb-toggle checked="variant.publish"
+                                    disabled="(variant.canPublish === false)"
+                                    on-click="vm.toggleSelection(variant)"
+                                    style="margin-right: 8px;">
+                        </umb-toggle>
+                        <!-- this input is necessary to wire up any server validation errors to the UI -->
+                        <input id="{{variant.htmlId}}"
+                               name="publishVariantSelector"
+                               type="hidden"
+                               ng-model="variant.publish"
+                               val-server-field="{{variant.htmlId}}" />
 
                         <div>
                             <label for="{{variant.htmlId}}" style="margin-bottom: 0;">
