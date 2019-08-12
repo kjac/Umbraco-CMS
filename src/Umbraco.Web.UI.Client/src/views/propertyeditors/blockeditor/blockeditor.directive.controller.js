@@ -136,9 +136,7 @@
             icon: element.icon, 
             description: element.documentType.description, // probably don't want to persist these.
             content: {},
-            settings: {
-                view: 'views/propertyeditors/blockeditor/blockeditor.block.html'
-            }  
+            settings: {}  
         };
         vm.openContent(element, block);
     }

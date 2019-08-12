@@ -42,9 +42,7 @@
                     submit: function (model) {
                         _.each(model.selection, function (elementType) {
                             block.elementType = elementType.udi;
-                            block.settings = {
-                                view: 'views/propertyeditors/blockeditor/blockeditor.block.html'
-                            }
+                            block.settings = {}
                             $scope.model.value.push(block);
                         });
 
