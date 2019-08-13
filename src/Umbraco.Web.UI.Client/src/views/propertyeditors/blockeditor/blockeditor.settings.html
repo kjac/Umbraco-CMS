@@ -1,6 +1,6 @@
 ﻿<div ng-controller="Umbraco.PropertyEditors.BlockEditor.SettingsController">
 
-    <umb-node-preview ng-repeat="block in blocks"
+    <umb-node-preview ng-repeat="block in model.value"
                       name="getBlockName(block)"
                       alias="block.elementType"
                       icon="icon-folder"

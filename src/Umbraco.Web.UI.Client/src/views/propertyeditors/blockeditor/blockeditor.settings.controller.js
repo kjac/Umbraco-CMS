@@ -5,12 +5,9 @@
         "editorService",
         function ($scope, contentTypeResource, editorService) {
 
-            $scope.blocks = [];
             $scope.elementTypes = [];
 
-            if ($scope.model.value) {
-                $scope.blocks = $scope.model.value;
-            } else {
+            if (!$scope.model.value) {
                 $scope.model.value = [];
             }
 
@@ -18,10 +15,6 @@
                 .then(function (contentType) {
                     $scope.elementTypes.push(contentType);
                 });
-
-            $scope.$on("formSubmitting", function () {
-                $scope.model.value = $scope.blocks;
-            });
 
             $scope.getBlockName = function(udi) {
                 return 'Get block name from somewhere...';
